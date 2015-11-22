@@ -1,0 +1,12 @@
+[template]
+src = "nginx.tmpl"
+
+dest = "/etc/nginx/sites-enabled/default"
+
+keys = [ "/helloweb" ]
+
+owner = "root"
+mode = "0644"
+
+#check_cmd = "/usr/sbin/nginx -t -c {{.dest}}"
+reload_cmd = "/usr/sbin/service nginx reload"
