@@ -1,6 +1,9 @@
 # High available & dynamically scale with swarm + consul
 利用 swarm + consul 架構一個基於 docker 的基礎建設  
-可以做到 HA 以及 dynamically scale 的效果  
+可以做到
+- 機器無預警關機時服務可自動在另一台機器啟動
+- 服務 loading 附載超過臨界值時，可以動態在其他機器新增服務做附載均衡
+
 簡單 demo 步驟如下
 
 ## 在  maste 上安裝 consul
