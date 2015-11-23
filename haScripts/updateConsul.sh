@@ -1,13 +1,13 @@
 #!/bin/bash
 show_help() {
 	cat << EOF
-	Usage: ${0##*/} [-h] [-c consul] [-p path] [-s swarm] [-i image]
+	Usage: ${0##*/} [-h] [-c consul] [-i image] [-p path] [-s swarm]
 	get all running container info from swarm api and update to consul
 	-h	display this help and exit
 	-c	consul url. ex: "http://192.168.99.104:8500"
+	-i	image. ex: "genchilu/helloweb"
 	-p	path in consul. ex: "helloweb"
 	-s	swarm. ex: "192.168.99.104:2376"
-	-i	image. ex: "genchilu/helloweb"
 EOF
 }
 
@@ -25,11 +25,11 @@ while getopts "h?c:p:s:i:" opt; do
 			;;
 		c)	consul=$OPTARG
 			;;
+		i)	targetImage=$OPTARG
+			;;
 		p)	consulPath=$OPTARG
 			;;
 		s)	swarm=$OPTARG
-			;;
-		i)	targetImage=$OPTARG
 			;;
 	esac
 done

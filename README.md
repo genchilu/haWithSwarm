@@ -1,4 +1,4 @@
-# HA with swarm
+# High available & auto scale up with swarm + consul
 
 ## 在  maste 上安裝 consul
 ```sh

@@ -1,13 +1,13 @@
 #!/bin/bash
 show_help() {
 	cat << EOF
-	Usage: ${0##*/} [-h] [-s swarm] [-i image] [-c consul] [-p path]
+	Usage: ${0##*/} [-h] [-c consul] [-i image] [-p path] [-s swarm]
 	kill a running container and update info to consul
 	-h	display this help and exit
-	-s	swarm master ip & port. ex: "192.168.99.104:2376"
-	-i	image name. ex: "genchilu/helloweb"
 	-c	consul. ex: "http://192.168.99.104:8500"
+	-i	image name. ex: "genchilu/helloweb"
 	-p	path. ex: "helloweb"
+	-s	swarm master ip & port. ex: "192.168.99.104:2376"
 EOF
 }
 
@@ -23,13 +23,13 @@ while getopts "h?s:i:c:p:" opt; do
 			show_help
 			exit 0
 			;;
-		s)	swarm=$OPTARG
+		c)	consul=$OPTARG
 			;;
 		i)	targetImage=$OPTARG
 			;;
-		c)	consul=$OPTARG
-			;;
 		p)	consulPath=$OPTARG
+			;;
+		s)	swarm=$OPTARG
 			;;
 	esac
 done
