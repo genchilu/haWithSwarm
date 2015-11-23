@@ -1,4 +1,7 @@
-# High available & auto scale up with swarm + consul
+# High available & dynamically scale with swarm + consul
+利用 swarm + consul 架構一個基於 docker 的基礎建設  
+可以做到 HA 以及 dynamically scale 的效果  
+簡單 demo 步驟如下
 
 ## 在  maste 上安裝 consul
 ```sh
@@ -73,5 +76,5 @@ $ docker -H 192.168.99.104:2376 ps
 CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS                           NAMES
 042d2e99b2b1        genchilu/helloweb   "/usr/bin/node /opt/h"   10 seconds ago      Up 10 seconds       192.168.99.106:3000->3000/tcp   docker02/fervent_darwin
 ```
-發現服務自動在 docker02 跑起來
+發現看到服務在 docker02 跑起來
 
