@@ -1,0 +1,3 @@
+[submodule "goWeb/src"]
+	path = goWeb/src
+	url = https://github.com/genchilu/goWebPricate.git
