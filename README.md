@@ -81,9 +81,11 @@ docker run -ti --rm genchilu/checkalive -a "-sessiontype=redis -redisinfo=master
 ### HA
 打開瀏覽器輸入 http://master_ip  
 ![](login.png)  
+  
 登入後可看到使用者，瀏覽次數和此時服務所在的 container 的 ip  
 (refresh 頁面瀏覽次數會增加)  
 ![](ha1.png)  
+  
 在 master 上輸入下列指令查找當前服務部署在那一台機器
 ```
 $>docker -H master_ip:4000 ps
@@ -92,11 +94,14 @@ a0e3bbc78c4d        genchilu/go-web-example   "/main -sessiontype=r"   Less than
 ```
 直接把 mydocker02 關機  
 ![](ha3.png)  
+  
 此時瀏覽 http://master_ip 會出現 502 錯誤  
 ![](ha4.png)  
+  
 等約兩到三分鐘(時間長短取決於 swarm manager 對失敗節點訊息的同步速度)  
 再重新瀏覽 http://master_ip 可發現網頁自動恢復，且保有上次登入的 session  
-![](ha5.png)
+![](ha5.png)  
+  
 ### scale up & load balancing
 在 master 上連續發佈 demo 用的 web
 ```
