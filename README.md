@@ -1,12 +1,11 @@
 # High available & dynamically scale with swarm + consul
 利用 swarm + consul 架構一個基於 docker 的基礎建設  
-每個元件都包成 docker image
 可以做到
 - 機器無預警關機時服務可自動在另一台機器啟動
 - 服務 loading 附載超過臨界值時，可以動態在其他機器新增服務做負載均衡
 - 在上述兩種情況皆保存用戶的 session 
 
-詳細說明請參考[架構說明](http://genchilu-blog.logdown.com/posts/317095-based-on-swarm-and-consul-ha-and-dynamically-extensible-architectures)  
+詳細說明請參考[架構說明](http://logdown.com/account/posts/509176/edit)  
 ## 簡單架設步驟如下  
 準備四台裝好 docker 的vm，一台 master，三台 nodes  
 docker daemon 啟動時需加入下列參數 "-H 0.0.0.0:2376 -H unix:///var/run/docker.sock"
@@ -37,17 +36,17 @@ Role: primary
 Strategy: spread
 Filters: health, port, dependency, affinity, constraint
 Nodes: 3
- docker01: docker01:2375
+ docker01: mydocker02:2376
   └ Containers: 1
   └ Reserved CPUs: 0 / 1
   └ Reserved Memory: 0 B / 778.3 MiB
   └ Labels: executiondriver=native-0.2, kernelversion=3.19.0-28-generic, operatingsystem=Ubuntu 14.04.3 LTS, storagedriver=aufs
- docker02: docker02:2375
+ docker02: mydocker03:2376
   └ Containers: 1
   └ Reserved CPUs: 0 / 1
   └ Reserved Memory: 0 B / 778.3 MiB
   └ Labels: executiondriver=native-0.2, kernelversion=3.19.0-28-generic, operatingsystem=Ubuntu 14.04.3 LTS, storagedriver=aufs
- docker03: docker03:2375
+ docker03: mydocker04:2376
   └ Containers: 1
   └ Reserved CPUs: 0 / 1
   └ Reserved Memory: 0 B / 778.3 MiB
@@ -60,20 +59,20 @@ Name: 04511c8c45b8
 ```
 docker run -d --name interlock --restart=always ehazlett/interlock --swarm-url tcp://master_ip:4000 --plugin nginx start
 ```
-### 啟動用域名訪問 interlock 的 nginx
+### 啟動用域名訪問 interlock 的 nginx (Dockerfile 放在 nginx 目錄)
 ```
 docker run -d -p 80:80 --link interlock:goweb.example.url genchilu/nginx
 ```
-### 啟動 redis 存 session
+### 啟動 redis 存 session (Dockerfile 放在 redis 目錄)
 ```
-dockeurme run -d --name redis-server -p 6379:6379 --restart=always genchilu/redis
+docker run -d --name redis-server -p 6379:6379 --restart=always genchilu/redis
 ```
-### 啟動 demo 用的 example web
+### 啟動 demo 用的 example web (Dockerfile 和 source code 放在 goWeb 目錄)
 ```
 docker -H master_ip:4000 run -d -P -h goweb.example.url --restart=always genchilu/go-web-example -sessiontype=redis -redisinfo=master_ip:6379 -sessionlifetime=3000
 ```
 
-### 監控 swarm cluster 中有無 demo 用的 web container
+### 監控 swarm cluster 中有無 demo 用的 web container (Dockerfile 放在 checkAlive 目錄)
 ```
 docker run -ti --rm genchilu/checkalive -a "-sessiontype=redis -redisinfo=master_ip:6379 -sessionlifetime=3000" -i "genchilu/go-web-example" -o "-d -P -h goweb.example.url --restart=always" -s "master_ip:4000" -t 10
 ```
