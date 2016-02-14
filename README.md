@@ -60,20 +60,20 @@ Name: 04511c8c45b8
 ```
 docker run -d --name interlock --restart=always ehazlett/interlock --swarm-url tcp://master_ip:4000 --plugin nginx start
 ```
-### 啟動用域名訪問 interlock 的 nginx (Dockerfile 放在 nginx 目錄)
+### 啟動用域名訪問 interlock 的 nginx
 ```
 docker run -d -p 80:80 --link interlock:goweb.example.url genchilu/nginx
 ```
-### 啟動 redis 存 session (Dockerfile 放在 redis 目錄)
+### 啟動 redis 存 session
 ```
 dockeurme run -d --name redis-server -p 6379:6379 --restart=always genchilu/redis
 ```
-### 啟動 demo 用的 example web (Dockerfile 和 source code 放在 goWeb 目錄)
+### 啟動 demo 用的 example web
 ```
 docker -H master_ip:4000 run -d -P -h goweb.example.url --restart=always genchilu/go-web-example -sessiontype=redis -redisinfo=master_ip:6379 -sessionlifetime=3000
 ```
 
-### 監控 swarm cluster 中有無 demo 用的 web container (Dockerfile 放在 checkAlive 目錄)
+### 監控 swarm cluster 中有無 demo 用的 web container
 ```
 docker run -ti --rm genchilu/checkalive -a "-sessiontype=redis -redisinfo=master_ip:6379 -sessionlifetime=3000" -i "genchilu/go-web-example" -o "-d -P -h goweb.example.url --restart=always" -s "master_ip:4000" -t 10
 ```
@@ -82,19 +82,19 @@ docker run -ti --rm genchilu/checkalive -a "-sessiontype=redis -redisinfo=master
 打開瀏覽器輸入 http://master_ip  
 ![](login.png)  
 登入後可看到使用者，瀏覽次數和此時服務所在的 container 的 ip  
-(refresh 頁面瀏覽次數會增加)
-![](ha1.png)
+(refresh 頁面瀏覽次數會增加)  
+![](ha1.png)  
 在 master 上輸入下列指令查找當前服務部署在那一台機器
 ```
 $>docker -H master_ip:4000 ps
 CONTAINER ID        IMAGE                     COMMAND                  CREATED                  STATUS                  PORTS                            NAMES
 a0e3bbc78c4d        genchilu/go-web-example   "/main -sessiontype=r"   Less than a second ago   Up Less than a second   192.168.99.109:32770->8080/tcp   mydocker02/condescending_goldstine
 ```
-直接把 mydocker02 關機
+直接把 mydocker02 關機  
 ![](ha3.png)  
-此時瀏覽 http://master_ip 會出現 502 錯誤
+此時瀏覽 http://master_ip 會出現 502 錯誤  
 ![](ha4.png)  
-等約兩到三分鐘(時間長短取決於 swarm cluster 對節點失敗的訊息同步到 manager 的速度)  
+等約兩到三分鐘(時間長短取決於 swarm manager 對失敗節點訊息的同步速度)  
 再重新瀏覽 http://master_ip 可發現網頁自動恢復，且保有上次登入的 session  
 ![](ha5.png)
 ### scale up & load balancing
@@ -103,7 +103,8 @@ a0e3bbc78c4d        genchilu/go-web-example   "/main -sessiontype=r"   Less than
 # 每輸入一次及發佈一次
 docker -H master_ip:4000 run -d -P -h goweb.example.url --restart=always genchilu/go-web-example -sessiontype=redis -redisinfo=master_ip:6379 -sessionlifetime=3000
 ```
-瀏覽 http://master_ip 後持續刷新，會發現 ip 會不同
-![](scaleup1.png)
+瀏覽 http://master_ip 後持續刷新，會發現 ip 會不同，可見每次存取頁面都連到不同的 container  
+![](scaleup1.png)  
 ![](scaleup2.png)
+
 
