@@ -57,7 +57,7 @@ Name: 04511c8c45b8
 ```
 ### 啟動 interlock 的 nginx plugin
 ```
-docker run -d --name interlock --restart=always ehazlett/interlock --swarm-url tcp://master_ip:4000 --plugin nginx start
+docker run -d --name interlock --restart=always ehazlett/interlock:0.3.1 --swarm-url tcp://master_ip:4000 --plugin nginx start
 ```
 ### 啟動用域名訪問 interlock 的 nginx (Dockerfile 放在 nginx 目錄)
 ```
